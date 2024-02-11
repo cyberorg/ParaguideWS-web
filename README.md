@@ -1,6 +1,6 @@
 # ParaguideWS
 
-The weather station website for paragliding enthusiasts!
+The weather station website/web app for paragliding enthusiasts!
 
 ## Description
 
