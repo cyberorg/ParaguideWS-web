@@ -15,7 +15,8 @@ body {
 
 h1 {
     font-size: 13px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     color: #ffffff; /* White color for headings */
 }
 
@@ -28,7 +29,6 @@ img {
     width: 100%; /* Ensure video fills the container width */
     height: auto; /* Maintain aspect ratio */
     display: block; /* Ensure block-level display */
-    margin-bottom: 20px;
 }
 
 .container {
@@ -36,7 +36,9 @@ img {
     flex-direction: column;
     align-items: center;
     background-color: #1e1f2f; /* Darker background for container */
-    padding: 20px;
+    padding: 0px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Slightly darker shadow */
 }
 
 .weather-widget {
@@ -47,7 +49,8 @@ img {
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Slightly darker shadow */
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 .weather-widget h1 {
@@ -81,7 +84,7 @@ img {
 
 @media (max-width: 600px) {
     .container {
-        padding: 0 10px;
+        padding: 0 0px;
     }
 
     .weather-widget {
