@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParaguideWS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.8/dist/add-to-homescreen.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.8/dist/add-to-homescreen.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Latest snapshot (updated every 5 minutes till sunset):</h1>
+        <img src="/webcams/view.jpg" alt="Latest in Bir">
+    </div>
+    <div class="container">
+        <h1>Timelapse of last 24h (updated hourly):</h1>
+        <video controls>
+            <source src="/webcams/timelapse.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <!-- Weather Widget -->
+    <div class="weather-widget">
+        <h1>Current Weather</h1>
+        <div class="weather-info">
+            <div class="weather-data">
+                <img src="temperature_icon.png" alt="Temperature icon">
+                Temperature: <span id="temperature">Loading...</span>
+            </div>
+            <div class="weather-data">
+                <img src="humidity_icon.png" alt="Humidity icon">
+                Humidity: <span id="humidity">Loading...</span>
+            </div>
+            <div class="weather-data">
+                <img src="pressure_icon.png" alt="Pressure icon">
+                Pressure: <span id="pressure">Loading...</span>
+            </div>
+            <div class="weather-data">
+                <img src="dewpoint_icon.png" alt="Dew Point icon">
+                Dew Point: <span id="dewpt">Loading...</span>
+            </div>
+            <div class="weather-data">
+                <img src="observation_icon.png" alt="Observation icon">
+                Observation at: <span id="otime">Loading...</span>
+            </div>
+            This weather station's dashboards:<br>
+            <a href="https://www.wunderground.com/dashboard/pws/IBAIJN1" target="_blank">Wunderground</a><br>
+            <a href="https://www.windy.com/station/pws-f0d0c46a?31.012,76.708,8" target="_blank">Windy</a><br>
+        </div>
+    </div>
+
+    <div data-toggle="pointer-events" class="container">
+        <iframe width="650" height="450" src="https://embed.windy.com/embed2.html?lat=32.037&amp;lon=76.708&amp;detailLat=32.037&amp;detailLon=76.708&amp;width=650&amp;height=450&amp;zoom=10&amp;level=surface&amp;overlay=clouds&amp;product=gfs&amp;menu=&amp;message=&amp;marker=true&amp;calendar=now&amp;pressure=true&amp;type=map&amp;location=coordinates&amp;detail=true&amp;metricWind=km%2Fh&amp;metricTemp=%C2%B0C&amp;radarRange=-1"
+            frameborder="0"></iframe>
+    </div>
+    <div class="container" style="text-align: center; margin-top: 20px;"><button id="addToHomeScreen">Add to Home Screen</button></div>
+    <!-- Back to homepage and paragliding links -->
+    <div class="container" style="text-align: center; margin-top: 20px;">
+        <a href="https://paraguide.in">Back to homepage</a><br>
+        <a href="https://j.mp/paraglidingindia">All about paragliding in India</a>
+        <a href="https://github.com/cyberorg/paraguidews">Paraguide Weather Station code</a>
+        <a href="https://github.com/cyberorg/webcam-ftp-upload">Webcam code</a>
+    </div>
+
+    <script>
+        const apiKey = '';
+        const stationID = '';
+        const apiUrl = `https://api.weather.com/v2/pws/observations/current?stationId=${stationID}&format=json&units=m&apiKey=${apiKey}`;
+
+        async function fetchWeatherData() {
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                const observation = data.observations[0];
+
+                // Display weather data on the webpage
+                document.getElementById('temperature').textContent = observation.metric.temp + ' °C'; // Access temperature directly
+                document.getElementById('humidity').textContent = observation.humidity + '%';
+                document.getElementById('pressure').textContent = observation.metric.pressure + ' hPa'; // Access pressure directly
+                document.getElementById('dewpt').textContent = observation.metric.dewpt + ' °C'; //
+                document.getElementById('otime').textContent = observation.obsTimeLocal + ' IST';
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+            }
+        }
+
+        // Fetch weather data when the page loads
+        window.onload = fetchWeatherData;
+    </script>
+
+    <script>
+        document.getElementById('addToHomeScreen').addEventListener('click', function () {
+
+            window.AddToHomeScreenInstance = new window.AddToHomeScreen({
+                appName: 'ParaguideWS', // Name of the app.
+                appIconUrl: 'apple-touch-icon.png', // App icon link (square, at least 40 x 40 pixels).
+                assetUrl: 'https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.8/dist/assets/img/', // Link to directory of library image assets.
+                showErrorMessageForUnsupportedBrowsers: window.AddToHomeScreen.SHOW_ERRMSG_UNSUPPORTED.ALL,
+                allowUserToCloseModal: false,
+                maxModalDisplayCount: -1
+            });
+
+            ret = window.AddToHomeScreenInstance.show(); // show "add-to-homescreen" instructions to user, or do nothing if already added to homescreen
+        });
+    </script>
+</body>
+
+</html>
+

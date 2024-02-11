@@ -1,0 +1,15 @@
+{
+  "short_name": "ParaguideWS",
+  "name": "Weather Station and Webcams",
+  "display": "standalone",
+  "id": "/webcams/?source=pwa",
+  "start_url": "/webcams/?source=pwa",
+  "icons": [
+      {
+          "src": "apple-touch-icon.png",
+          "sizes": "any",
+          "type": "image/png",
+          "purpose": "any"
+      }
+  ]
+}
