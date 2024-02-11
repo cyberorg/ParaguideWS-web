@@ -25,7 +25,9 @@ img {
 }
 
 .video {
-    max-width: 100%;
+    width: 100%; /* Ensure video fills the container width */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Ensure block-level display */
     margin-bottom: 20px;
 }
 
