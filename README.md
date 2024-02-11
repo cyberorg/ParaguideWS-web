@@ -22,7 +22,7 @@ Visit [https://paraguide.in/ws](https://paraguide.in/ws) to see it in action.
 
 - [ParaguideWS GitHub Repository](https://github.com/cyberorg/ParaguideWS) - Weather station
 - [Webcam FTP Upload GitHub Repository](https://github.com/cyberorg/webcam-ftp-upload) - Camera utility
-
+- [Add to home screen GitHub Repository](https://github.com/philfung/add-to-homescreen) - Turns to mobile app
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
