@@ -26,6 +26,8 @@
     <!-- Weather Widget -->
     <div class="weather-widget">
         <h1 style="text-align: center;">Current Weather</h1>
+                        <!-- Toggle for Celsius and Fahrenheit -->
+        <button id="toggleUnit" onclick="toggleTemperatureUnit()" style="float: right;">C|F</button>
         <div class="weather-info">
             <div class="weather-data">
                 <img src="temperature_icon.png" alt="Temperature icon">
@@ -52,13 +54,12 @@
             <a href="https://www.windy.com/station/pws-f0d0c46a?31.012,76.708,8" target="_blank">Windy</a><br>
         </div>
     </div>
-
-    <div data-toggle="pointer-events" class="container" style="padding: 10px;">
+    <div class="container">
         <iframe width="650" height="450" src="https://embed.windy.com/embed2.html?lat=32.037&amp;lon=76.708&amp;detailLat=32.037&amp;detailLon=76.708&amp;width=650&amp;height=450&amp;zoom=10&amp;level=surface&amp;overlay=clouds&amp;product=gfs&amp;menu=&amp;message=&amp;marker=true&amp;calendar=now&amp;pressure=true&amp;type=map&amp;location=coordinates&amp;detail=true&amp;metricWind=km%2Fh&amp;metricTemp=%C2%B0C&amp;radarRange=-1"
             frameborder="0"></iframe>
     </div>
     <!-- Back to homepage and paragliding links -->
-    <div class="container" style="text-align: center; margin-top: 0px; padding: 10px;">
+    <div class="container" style="text-align: center; margin-top: 5px; padding: 10px;">
         <button id="addToHomeScreen">Add to mobile Home Screen</button>
         <a href="https://paraguide.in">Back to homepage</a><br>
         <a href="https://j.mp/paraglidingindia">All about paragliding in India</a>
@@ -71,17 +72,40 @@
         const stationID = '';
         const apiUrl = `https://api.weather.com/v2/pws/observations/current?stationId=${stationID}&format=json&units=m&apiKey=${apiKey}`;
 
+        let isCelsius = true; // Initial temperature unit is Celsius
+
+        function toggleTemperatureUnit() {
+            isCelsius = !isCelsius; // Toggle between Celsius and Fahrenheit
+            fetchWeatherData(); // Re-fetch weather data to update temperature display
+        }
+
         async function fetchWeatherData() {
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
                 const observation = data.observations[0];
 
+                let temperature = observation.metric.temp;
+                if (!isCelsius) {
+                    // Convert temperature to Fahrenheit
+                    temperature = (temperature * 9 / 5) + 32;
+                }
+        let dewPoint = observation.metric.dewpt;
+        if (!isCelsius) {
+            dewPoint = (dewPoint * 9 / 5) + 32; // Convert dew point to Fahrenheit
+        }
+
+                let pressure = observation.metric.pressure;
+                if (!isCelsius) {
+                    // Convert pressure from hPa to inches of mercury
+                    pressure = pressure * 0.02953;
+                }
+
                 // Display weather data on the webpage
-                document.getElementById('temperature').textContent = observation.metric.temp + ' °C'; // Access temperature directly
+                document.getElementById('temperature').textContent = temperature.toFixed(2) + (isCelsius ? ' °C' : ' °F');
                 document.getElementById('humidity').textContent = observation.humidity + '%';
-                document.getElementById('pressure').textContent = observation.metric.pressure + ' hPa'; // Access pressure directly
-                document.getElementById('dewpt').textContent = observation.metric.dewpt + ' °C'; //
+                document.getElementById('pressure').textContent = pressure.toFixed(2) + (isCelsius ? ' hPa' : ' inHg');
+                document.getElementById('dewpt').textContent = dewPoint.toFixed(2) + (isCelsius ? ' °C' : ' °F');
                 document.getElementById('otime').textContent = observation.obsTimeLocal + ' IST';
             } catch (error) {
                 console.error('Error fetching weather data:', error);
@@ -90,9 +114,7 @@
 
         // Fetch weather data when the page loads
         window.onload = fetchWeatherData;
-    </script>
 
-    <script>
         document.getElementById('addToHomeScreen').addEventListener('click', function () {
 
             window.AddToHomeScreenInstance = new window.AddToHomeScreen({
