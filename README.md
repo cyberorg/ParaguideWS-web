@@ -16,7 +16,7 @@ ParaguideWS provides real-time weather information and live webcam feeds, tailor
 
 ## Live
 
-Visit [https://paraguide.in/ws](https://ws.paraguide.in/) to see it in action.
+Visit [https://ws.paraguide.in/](https://ws.paraguide.in/) to see it in action.
 
 ## Additional Resources
 
