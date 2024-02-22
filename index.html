@@ -1,135 +1,184 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParaguideWS</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.8/dist/add-to-homescreen.min.css">
-    <script src="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.8/dist/add-to-homescreen.min.js"></script>
-    <link rel="manifest" href="manifest.json">
+  <!-- Meta tags for document information -->
+  <meta name="generator" content="HTML Tidy for HTML5 for Linux version 5.6.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ParaguideWS</title>
+  <!-- Meta tags for SEO -->
+  <meta name="description" content="ParaguideWS - Your source for paragliding weather information around Bir.">
+  <meta name="keywords" content="paragliding, weather, India, Bir, paragliding weather, outdoor activities, Himachal Pradesh, India, Himalayas">
+  <meta name="author" content="Jigish Gohil - https://ws.paraguide.in">
+  <meta name="robots" content="index, follow"><!-- Direct search engines to index and follow the page -->
+  <meta name="revisit-after" content="7 days"><!-- Suggest how often search engines should revisit the page -->
+  <meta name="language" content="English"><!-- Specify the language of the content -->
+  <meta name="distribution" content="global"><!-- Indicate the distribution of the content -->
+  <meta name="referrer" content="origin-when-cross-origin"><!-- Define the referrer policy -->
+  <meta name="copyright" content="2024 Jigish Gohil"><!-- Provide copyright information -->
+  <meta name="geo.placename" content="Bir, Himachal Pradesh, India"><!-- Specify geographical location -->
+  <meta name="geo.region" content="IN-HP"><!-- Specify the geographical region -->
+  <meta name="geo.position" content="32.037° N; 76.708° E"><!-- Specify latitude and longitude -->
+  <meta name="ICBM" content="32.037, 76.708"><!-- Specify latitude and longitude in decimal degrees -->
+  <meta name="rating" content="general"><!-- Specify content rating -->
+  <!-- Meta tags for web app capabilities -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ParaguideWS">
+  <meta name="application-name" content="ParaguideWS">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="apple-touch-icon.png">
+  <meta name="msapplication-tooltip" content="ParaguideWS">
+  <meta name="msapplication-starturl" content="https://ws.paraguide.in/">
+  <meta name="theme-color" content="#ffffff">
+  <!-- Open Graph meta tags for social sharing -->
+  <meta property="og:title" content="ParaguideWS">
+  <meta property="og:description" content="ParaguideWS - Your source for paragliding weather information around Bir.">
+  <meta property="og:url" content="https://ws.paraguide.in/">
+  <meta property="og:image" content="https://ws.paraguide.in/preview.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="ParaguideWS">
+  <!-- Twitter meta tags for social sharing -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@cyberorg">
+  <meta name="twitter:title" content="ParaguideWS">
+  <meta name="twitter:description" content="ParaguideWS - Your source for paragliding weather information around Bir.">
+  <meta name="twitter:image" content="https://ws.paraguide.in/preview.jpg">
+  <!-- Favicon links -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <!-- External CSS stylesheets -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.8/dist/add-to-homescreen.min.css">
+  <link rel="stylesheet" type="text/css" href="skewt.css">
+  <!-- External JavaScript libraries -->
+  <script src="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.8/dist/add-to-homescreen.min.js"></script>
+  <script src="skewt.js" charset="UTF-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+  <!-- Link to the web app manifest file -->
+  <link rel="manifest" href="manifest.json">
 </head>
-
 <body>
-    <div class="container" style="margin-bottom: 5px;">
-        <h1 style="text-align: center;">Latest snapshot (updated every 5 minutes till sunset):</h1>
-        <img src="/webcams/view.jpg" alt="Latest in Bir">
+  <!-- Container for latest brief -->
+  <div id="tbrief" class="container" style="margin-bottom: 5px; padding-bottom: 10px; display: block;">
+    <h1 style="text-align: center;">Latest brief:</h1>
+    <!-- Placeholder for long MET information -->
+    <div style="text-align: left;" id="longMET"></div>
+    <!-- Section for displaying weather alerts -->
+    <h1 id="todaySection">Color of the day</h1>
+    <div id="todayAlerts"></div>
+    <h1 id="tomorrowSection">Color for tomorrow</h1>
+    <div id="tomorrowAlerts"></div>
+    <!-- Legend for warning levels -->
+    <div class="warning-legend" style="display: none;">
+      <div>
+        <div class="square" style="background-color: red;"></div>
+        <span>Warning</span>
+      </div>
+      <div>
+        <div class="square" style="background-color: orange;"></div>
+        <span>Alert</span>
+      </div>
+      <div>
+        <div class="square" style="background-color: yellow;"></div>
+        <span>Watch</span>
+      </div>
+      <div style="margin-left:10px"><a href="https://mausam.imd.gov.in/responsive/subDivisionWiseWarning.php" target="_blank">IMD</a></div>
     </div>
-    <div class="container">
-        <h1 style="text-align: center;">Timelapse of last 24h (updated hourly):</h1>
-        <video controls class="video">
-            <source src="/webcams/timelapse.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+  </div>
+  <!-- Container for Android app test -->
+  <div class="container" style="margin-bottom: 5px; padding: 10px;">Join the closed Android app test. <a href="https://wa.me/+919898092956">Share your play store ID.</a> </div>
+  <!-- Container for latest snapshot -->
+  <div class="container" style="margin-bottom: 5px;">
+    <h1 style="text-align: center;">Latest snapshot (every 5 minutes till sunset):</h1>
+    <img style="margin-bottom:10px" class="NO-CACHE" src="https://paraguide.in/webcams/view.jpg" alt="Latest in Bir">
+    <p><a href="webcams.html">Show Webcams near my Current Location.</a></p><br>
+  </div>
+  <!-- Container for book information -->
+  <div class="bookcontainer" style="margin-bottom: 5px;">
+    <div class="image-column"><img src="cover-w.svg" width="100%" height="100%" alt="cover"></div>
+    <div class="description-column">
+      <p><b>ALOFT AND UNBOUND</b></p>
+      <p>A book about paragliding life</p>
+      <p><a href="https://aloftandunbound.paraguide.in">https://aloftandunbound.paraguide.in</a></p>
     </div>
-    <!-- Weather Widget -->
-    <div class="weather-widget">
-        <h1 style="text-align: center;">Current Weather</h1>
-                        <!-- Toggle for Celsius and Fahrenheit -->
-        <button id="toggleUnit" onclick="toggleTemperatureUnit()" style="float: right;">C|F</button>
-        <div class="weather-info">
-            <div class="weather-data">
-                <img src="temperature_icon.png" alt="Temperature icon">
-                Temperature: <span id="temperature">Loading...</span>
-            </div>
-            <div class="weather-data">
-                <img src="humidity_icon.png" alt="Humidity icon">
-                Humidity: <span id="humidity">Loading...</span>
-            </div>
-            <div class="weather-data">
-                <img src="pressure_icon.png" alt="Pressure icon">
-                Pressure: <span id="pressure">Loading...</span>
-            </div>
-            <div class="weather-data">
-                <img src="dewpoint_icon.png" alt="Dew Point icon">
-                Dew Point: <span id="dewpt">Loading...</span>
-            </div>
-            <div class="weather-data">
-                <img src="observation_icon.png" alt="Observation icon">
-                Observation at: <span id="otime">Loading...</span>
-            </div>
-            This weather station's dashboards:<br>
-            <a href="https://www.wunderground.com/dashboard/pws/IBAIJN1" target="_blank">Wunderground</a><br>
-            <a href="https://www.windy.com/station/pws-f0d0c46a?31.012,76.708,8" target="_blank">Windy</a><br>
-        </div>
+  </div>
+  <!-- Container for timelapse video -->
+  <div class="container">
+    <h1 style="text-align: center;">Timelapse of last 24h (updated hourly):</h1>
+    <video controls="" class="video">
+      <source src="https://paraguide.in/webcams/timelapse.mp4" type="video/mp4"> Your browser does not support the video tag.
+    </video>
+  </div>
+  <!-- Weather Widget container -->
+  <div class="weather-widget">
+    <h1 style="text-align: center;">Current Weather</h1>
+    <!-- Button to toggle temperature unit -->
+    <button id="toggleUnit" onclick="toggleTemperatureUnit()" style="float: right;">C|F</button>
+    <!-- Weather information -->
+    <div class="weather-info">
+      <!-- Placeholder for weather data -->
     </div>
-    <div class="container">
-        <iframe width="650" height="450" src="https://embed.windy.com/embed2.html?lat=32.037&amp;lon=76.708&amp;detailLat=32.037&amp;detailLon=76.708&amp;width=650&amp;height=450&amp;zoom=10&amp;level=surface&amp;overlay=clouds&amp;product=gfs&amp;menu=&amp;message=&amp;marker=true&amp;calendar=now&amp;pressure=true&amp;type=map&amp;location=coordinates&amp;detail=true&amp;metricWind=km%2Fh&amp;metricTemp=%C2%B0C&amp;radarRange=-1"
-            frameborder="0"></iframe>
+  </div>
+  <!-- Container for next 8 hours forecast -->
+  <div id="8hours" class="container" style="padding-bottom: 10px; display: block; margin-top:5px">
+    <h1 style="text-align: center;">Next 8 hours:</h1>
+    <table id="weatherForecast">
+      <!-- Table headers for weather forecast -->
+    </table>
+    <h1 style="text-align: left;">Today:</h1>
+    <div style="text-align: left;" id="dailyForecast"></div>
+  </div>
+  <!-- Container for Windy iframe -->
+  <div id="windy" class="container" style="padding:5px; display: block; text-align: center;">
+    <iframe width="650" height="450" src="https://embed.windy.com/embed2.html?lat=32.037&amp;lon=76.708&amp;detailLat=32.037&amp;detailLon=76.708&amp;width=650&amp;height=450&amp;zoom=10&amp;level=surface&amp;overlay=clouds&amp;product=mblue&amp;menu=&amp;message=&amp;marker=true&amp;calendar=now&amp;pressure=true&amp;type=map&amp;location=coordinates&amp;detail=true&amp;metricWind=km%2Fh&amp;metricTemp=%C2%B0C&amp;radarRange=-1" frameborder="0"></iframe>
+    <a id="windyLink" href="#" target="_blank">Windy.com - Open with my Current Location</a>
+  </div>
+  <!-- Container for Skewt diagram -->
+  <div id="skewtc" class="container" style="text-align: center; max-width: 500px; margin-left: auto; margin-right: auto; padding:5px;  display: block;">
+    <!-- Skewt diagram placeholder -->
+    <div style="background-color: white;" id="skewt"></div>
+    <div id="listcontainer"></div>
+    <a id="rucSoundingsLink" href="#" target="_blank">RUC Soundings - Open with my Current Location</a>
+    <div>Time in IST</div>
+  </div>
+  <!-- Container for Meteogram -->
+  <div id="meteogram" class="container" style="text-align: center; max-width: 500px; margin-left: auto; margin-right: auto; padding:5px; padding-bottom:0px; display: block;">
+    <img style="margin-bottom:0px;" src="https://my.meteoblue.com/images/meteogram?temperature_units=C&wind_units=kmh&precipitation_units=mm&winddirection=3char&iso2=in&lat=32.0478&lon=76.7256&asl=1591&tz=Asia%2FKolkata&apikey=jhMJTOUVRNvs25m4&lang=en&location_name=B%C4%ABr+Kh%C4%81s&windspeed_units=kmh&sig=ae2ce17ea31fb5241977e66c0a8f736a" alt="Meteogram - 5 days - Bīr Khās">
+    <a href="https://www.meteoblue.com/en/weather/week/b%c4%abr-kh%c4%81s_india_1275536" target="_blank" rel="noreferrer" style="display: block;">Weather Bīr Khās - meteoblue</a>
+    <a id="meteoblueLink" href="#" target="_blank">Meteoblue.com - Open with my Current Location</a>
+  </div>
+  <!-- Links and information container -->
+  <div class="container" style="text-align: center; margin-top: 5px; padding: 10px;">
+    <button id="addToHomeScreen" style="display: none;">Install</button><br>
+    <div id="iinfo" style="display: none;">
+      Install for many more features. This app gives you no cookies, nor gathers any of your data or takes any space on your device.
     </div>
     <!-- Back to homepage and paragliding links -->
-    <div class="container" style="text-align: center; margin-top: 5px; padding: 10px;">
-        <button id="addToHomeScreen">Add to mobile Home Screen</button>
-        <a href="https://paraguide.in">Back to homepage</a><br>
-        <a href="https://j.mp/paraglidingindia">All about paragliding in India</a>
-        <a href="https://github.com/cyberorg/paraguidews">Paraguide Weather Station code</a>
-        <a href="https://github.com/cyberorg/webcam-ftp-upload">Webcam code</a>
-    </div>
-
-    <script>
-        const apiKey = '';
-        const stationID = '';
-        const apiUrl = `https://api.weather.com/v2/pws/observations/current?stationId=${stationID}&format=json&units=m&apiKey=${apiKey}`;
-
-        let isCelsius = true; // Initial temperature unit is Celsius
-
-        function toggleTemperatureUnit() {
-            isCelsius = !isCelsius; // Toggle between Celsius and Fahrenheit
-            fetchWeatherData(); // Re-fetch weather data to update temperature display
-        }
-
-        async function fetchWeatherData() {
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                const observation = data.observations[0];
-
-                let temperature = observation.metric.temp;
-                if (!isCelsius) {
-                    // Convert temperature to Fahrenheit
-                    temperature = (temperature * 9 / 5) + 32;
-                }
-        let dewPoint = observation.metric.dewpt;
-        if (!isCelsius) {
-            dewPoint = (dewPoint * 9 / 5) + 32; // Convert dew point to Fahrenheit
-        }
-
-                let pressure = observation.metric.pressure;
-                if (!isCelsius) {
-                    // Convert pressure from hPa to inches of mercury
-                    pressure = pressure * 0.02953;
-                }
-
-                // Display weather data on the webpage
-                document.getElementById('temperature').textContent = temperature.toFixed(2) + (isCelsius ? ' °C' : ' °F');
-                document.getElementById('humidity').textContent = observation.humidity + '%';
-                document.getElementById('pressure').textContent = pressure.toFixed(2) + (isCelsius ? ' hPa' : ' inHg');
-                document.getElementById('dewpt').textContent = dewPoint.toFixed(2) + (isCelsius ? ' °C' : ' °F');
-                document.getElementById('otime').textContent = observation.obsTimeLocal + ' IST';
-            } catch (error) {
-                console.error('Error fetching weather data:', error);
-            }
-        }
-
-        // Fetch weather data when the page loads
-        window.onload = fetchWeatherData;
-
-        document.getElementById('addToHomeScreen').addEventListener('click', function () {
-
-            window.AddToHomeScreenInstance = new window.AddToHomeScreen({
-                appName: 'ParaguideWS', // Name of the app.
-                appIconUrl: 'apple-touch-icon.png', // App icon link (square, at least 40 x 40 pixels).
-                assetUrl: 'https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.8/dist/assets/img/', // Link to directory of library image assets.
-                showErrorMessageForUnsupportedBrowsers: window.AddToHomeScreen.SHOW_ERRMSG_UNSUPPORTED.ALL,
-                allowUserToCloseModal: false,
-                maxModalDisplayCount: -1
-            });
-
-            ret = window.AddToHomeScreenInstance.show(); // show "add-to-homescreen" instructions to user, or do nothing if already added to homescreen
-        });
-    </script>
+    <button href="https://paraguide.in">Back to homepage</button><br>
+    <a href="https://j.mp/paraglidingindia">All about paragliding in India</a> 
+    <a href="https://github.com/cyberorg/paraguidews">Paraguide Weather Station code, buy me beer...</a> 
+    <a href="https://github.com/cyberorg/webcam-ftp-upload">Webcam code</a> 
+    <a href="https://github.com/cyberorg/ParaguideWS-web">This web app's code, bugs, suggestions, PRs...</a>
+    <p style="margin-top: 10px;">Data sourced from:<br> <a href="https://api.aerisapi.com" target="_blank">api.aerisapi.com</a>, <a href="https://meteoblue.com/" target="_blank">meteoblue.com</a>, <a href="https://rucsoundings.noaa.gov/" target="_blank">noaa.gov</a>, <a href="https://api.open-meteo.com" target="_blank">open-meteo.com</a>, <a href="https://wunderground.com" target="_blank">wunderground.com</a>, <a href="https://windy.com" target="_blank">windy.com</a></p>
+  </div>
+  <!-- Container for random links -->
+  <div id="randomlink" class="container" style="padding-bottom:75px;display: block;height: 200px;overflow-y: auto;">
+    <h1 style="text-align: center;">Random links from j.mp/paraglidingindia</a> </h1>
+    <button id="randomness" style="float: right;">🔀</button><br>
+    <div id="randomContentContainer"></div>
+  </div>
+  <!-- External JavaScript for functionality -->
+  <script src="paraguidews.js"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KZ8E643JK3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-KZ8E643JK3');
+  </script>
 </body>
-
 </html>
 
