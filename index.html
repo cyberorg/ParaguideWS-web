@@ -113,12 +113,34 @@
   </div>
   <!-- Weather Widget container -->
   <div class="weather-widget">
-    <h1 style="text-align: center;">Current Weather</h1>
-    <!-- Button to toggle temperature unit -->
+    <h1 style="text-align: center;">Current Weather</h1><!-- Toggle for Celsius and Fahrenheit -->
     <button id="toggleUnit" onclick="toggleTemperatureUnit()" style="float: right;">C|F</button>
-    <!-- Weather information -->
     <div class="weather-info">
-      <!-- Placeholder for weather data -->
+      <div class="weather-data">
+        <img src="temperature_icon.png" alt="Temperature icon"> Temperature:&nbsp; <span id="temperature">Loading...</span>
+      </div>
+      <div class="weather-data">
+        <img src="humidity_icon.png" alt="Humidity icon"> Humidity:&nbsp; <span id="humidity">Loading...</span>
+      </div>
+      <div class="weather-data">
+        <img src="pressure_icon.png" alt="Pressure icon"> Pressure:&nbsp; <span id="pressure">Loading...</span>
+      </div>
+      <div class="weather-data">
+        <img src="dewpoint_icon.png" alt="Dew Point icon"> Dew Point:&nbsp; <span id="dewpt">Loading...</span>
+      </div>
+      <div class="weather-data">
+        <img src="cb_icon.png" alt="Cloud base icon"> Approx. cloud base at:&nbsp; <span id="cloudBaseHeight">Calculating...</span>
+      </div>
+      <div class="weather-data">
+        <img src="observation_icon.png" alt="Observation icon"> Observation at: <span id="otime">Loading...</span>
+      </div>
+      <div class="weather-data">
+        <img src="aqi_icon.png" alt="AQI icon"> AQI:&nbsp; <span id="aqi">Loading...</span>&nbsp; Category:&nbsp; <span id="aqic">Loading...</span>
+      </div>This weather station's dashboards:<br>
+      <a href="https://www.pwsweather.com/station/pws/PARAGUIDEIN" target="_blank">PWSweather</a><br>
+      <a href="https://www.windy.com/station/pws-f0d0c46a?31.012,76.708,8" target="_blank">Windy</a><br>
+      <a href="https://www.wunderground.com/dashboard/pws/IBAIJN1" target="_blank">Wunderground</a><br>
+      <a href="https://www.wunderground.com/wundermap" target="_blank">Show Weather Stations around my Current Location</a><br>
     </div>
   </div>
   <!-- Container for next 8 hours forecast -->
