@@ -23,6 +23,8 @@ Visit [https://ws.paraguide.in/](https://ws.paraguide.in/) to see it in action.
 - [ParaguideWS GitHub Repository](https://github.com/cyberorg/ParaguideWS) - Weather station
 - [Webcam FTP Upload GitHub Repository](https://github.com/cyberorg/webcam-ftp-upload) - Camera utility
 - [Add to home screen GitHub Repository](https://github.com/philfung/add-to-homescreen) - Turns to mobile app
+- [Orkhan Jafarov's compass](https://dev.to/orkhanjafarovr/real-compass-on-mobile-browsers-with-javascript-3emi) - LZ finder compass
+- [David Félix's](https://github.com/dfelix/skewt-js/) - Skewt-js
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
