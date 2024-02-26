@@ -56,6 +56,41 @@
   <script src="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.8/dist/add-to-homescreen.min.js"></script>
   <script src="skewt.js" charset="UTF-8"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+      <script>
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+    }
+
+    // Function to toggle theme
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      setTheme(newTheme);
+    }
+
+    // Function to detect system theme and set theme
+    function detectSystemTheme() {
+      const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+      const userPreference = localStorage.getItem('theme');
+      
+      if (userPreference) {
+        setTheme(userPreference);
+      } else if (prefersDarkScheme.matches) {
+        setTheme('dark');
+      } else {
+        setTheme('light');
+      }
+    }
+
+const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: light)");
+
+    detectSystemTheme();
+    function refreshPage() {
+      // Clearing cache
+      window.location.reload(true);
+   }
+    </script>
   <!-- Link to the web app manifest file -->
   <link rel="manifest" href="manifest.json">
 </head>
@@ -66,9 +101,9 @@
     <!-- Placeholder for long MET information -->
     <div style="text-align: left;" id="longMET"></div>
     <!-- Section for displaying weather alerts -->
-    <h1 id="todaySection">Color of the day</h1>
+    <h1 id="todaySection" style="display: none;">Color of the day</h1>
     <div id="todayAlerts"></div>
-    <h1 id="tomorrowSection">Color for tomorrow</h1>
+    <h1 id="tomorrowSection" style="display: none;">Color for tomorrow</h1>
     <div id="tomorrowAlerts"></div>
     <!-- Legend for warning levels -->
     <div class="warning-legend" style="display: none;">
@@ -88,7 +123,7 @@
     </div>
   </div>
   <!-- Container for Android app test -->
-  <div class="container" style="margin-bottom: 5px; padding: 10px;">Join the closed Android app test. <a href="https://wa.me/+919898092956">Share your play store ID.</a> </div>
+  <div class="container" style="margin-bottom: 5px; padding: 10px;">Join the Android app beta test. <a href="https://wa.me/+919898092956">Share your play store ID.</a> </div>
   <!-- Container for latest snapshot -->
   <div class="container" style="margin-bottom: 5px;">
     <h1 style="text-align: center;">Latest snapshot (every 5 minutes till sunset):</h1>
@@ -117,25 +152,31 @@
     <button id="toggleUnit" onclick="toggleTemperatureUnit()" style="float: right;">C|F</button>
     <div class="weather-info">
       <div class="weather-data">
-        <img src="temperature_icon.png" alt="Temperature icon"> Temperature:&nbsp; <span id="temperature">Loading...</span>
+        <img src="warning_images/temperature_icon.png" alt="Temperature icon"> Temperature:&nbsp; <span id="temperature">Loading...</span>
       </div>
       <div class="weather-data">
-        <img src="humidity_icon.png" alt="Humidity icon"> Humidity:&nbsp; <span id="humidity">Loading...</span>
+        <img style="max-width:20px;" src="warning_images/11.png" alt="Min Temperature icon"> 24h Min:&nbsp; <span id="mint">Loading...</span>
       </div>
       <div class="weather-data">
-        <img src="pressure_icon.png" alt="Pressure icon"> Pressure:&nbsp; <span id="pressure">Loading...</span>
+        <img style="max-width:20px;" src="warning_images/08.png" alt="Max Temperature icon"> 24h Max:&nbsp; <span id="maxt">Loading...</span>
       </div>
       <div class="weather-data">
-        <img src="dewpoint_icon.png" alt="Dew Point icon"> Dew Point:&nbsp; <span id="dewpt">Loading...</span>
+        <img src="warning_images/humidity_icon.png" alt="Humidity icon"> Humidity:&nbsp; <span id="humidity">Loading...</span>
       </div>
       <div class="weather-data">
-        <img src="cb_icon.png" alt="Cloud base icon"> Approx. cloud base at:&nbsp; <span id="cloudBaseHeight">Calculating...</span>
+        <img src="warning_images/pressure_icon.png" alt="Pressure icon"> Pressure:&nbsp; <span id="pressure">Loading...</span>
       </div>
       <div class="weather-data">
-        <img src="observation_icon.png" alt="Observation icon"> Observation at: <span id="otime">Loading...</span>
+        <img src="warning_images/dewpoint_icon.png" alt="Dew Point icon"> Dew Point:&nbsp; <span id="dewpt">Loading...</span>
       </div>
       <div class="weather-data">
-        <img src="aqi_icon.png" alt="AQI icon"> AQI:&nbsp; <span id="aqi">Loading...</span>&nbsp; Category:&nbsp; <span id="aqic">Loading...</span>
+        <img src="warning_images/cb_icon.png" alt="Cloud base icon"> Approx. cloud base at:&nbsp; <span id="cloudBaseHeight">Calculating...</span>
+      </div>
+      <div class="weather-data">
+        <img src="warning_images/observation_icon.png" alt="Observation icon"> Observation at: <span id="otime">Loading...</span>
+      </div>
+      <div class="weather-data">
+        <img src="warning_images/aqi_icon.png" alt="AQI icon"> AQI:&nbsp; <span id="aqi">Loading...</span>&nbsp; Category:&nbsp; <span id="aqic">Loading...</span>
       </div>This weather station's dashboards:<br>
       <a href="https://www.pwsweather.com/station/pws/PARAGUIDEIN" target="_blank">PWSweather</a><br>
       <a href="https://www.windy.com/station/pws-f0d0c46a?31.012,76.708,8" target="_blank">Windy</a><br>
@@ -147,14 +188,27 @@
   <div id="8hours" class="container" style="padding-bottom: 10px; display: block; margin-top:5px">
     <h1 style="text-align: center;">Next 8 hours:</h1>
     <table id="weatherForecast">
-      <!-- Table headers for weather forecast -->
+      <tr>
+        <th>Time</th>
+        <th>Cloud %</th>
+        <th>Vis. km</th>
+        <th>
+          UVI <a href="https://archive.is/rNBWm">(?)</a>
+        </th>
+        <th>Solar Rad W/m² <a href="https://en.wikipedia.org/wiki/Solar_irradiance">(?)</th>
+        <th>Cape J/kg <a href="https://en.wikipedia.org/wiki/Convective_available_potential_energy">(?)</th>
+      </tr>
     </table>
     <h1 style="text-align: left;">Today:</h1>
     <div style="text-align: left;" id="dailyForecast"></div>
   </div>
+  <div id="metar" class="container" style="padding:5px; max-width: 500px; display: block; text-align: left; margin-left: auto; margin-right: auto;">
+  <h1 style="text-align: center;">METAR Information</h1>
+  <div id="metarData"></div>
+  </div>
   <!-- Container for Windy iframe -->
   <div id="windy" class="container" style="padding:5px; display: block; text-align: center;">
-    <iframe width="650" height="450" src="https://embed.windy.com/embed2.html?lat=32.037&amp;lon=76.708&amp;detailLat=32.037&amp;detailLon=76.708&amp;width=650&amp;height=450&amp;zoom=10&amp;level=surface&amp;overlay=clouds&amp;product=mblue&amp;menu=&amp;message=&amp;marker=true&amp;calendar=now&amp;pressure=true&amp;type=map&amp;location=coordinates&amp;detail=true&amp;metricWind=km%2Fh&amp;metricTemp=%C2%B0C&amp;radarRange=-1" frameborder="0"></iframe>
+    <iframe id="windyiframe" width="650" height="450" src="https://embed.windy.com/embed2.html?lat=32.037&amp;lon=76.708&amp;detailLat=32.037&amp;detailLon=76.708&amp;width=650&amp;height=450&amp;zoom=10&amp;level=surface&amp;overlay=clouds&amp;product=mblue&amp;menu=&amp;message=&amp;marker=true&amp;calendar=now&amp;pressure=true&amp;type=map&amp;location=coordinates&amp;detail=true&amp;metricWind=km%2Fh&amp;metricTemp=%C2%B0C&amp;radarRange=-1" frameborder="0"></iframe>
     <a id="windyLink" href="#" target="_blank">Windy.com - Open with my Current Location</a>
   </div>
   <!-- Container for Skewt diagram -->
@@ -171,13 +225,28 @@
     <a href="https://www.meteoblue.com/en/weather/week/b%c4%abr-kh%c4%81s_india_1275536" target="_blank" rel="noreferrer" style="display: block;">Weather Bīr Khās - meteoblue</a>
     <a id="meteoblueLink" href="#" target="_blank">Meteoblue.com - Open with my Current Location</a>
   </div>
+  <div id="lnews" class="container" style="text-align: left; max-width: 500px; margin-left: auto; margin-right: auto; padding:5px; display: block;">
+  <h1 style="text-align: center">Today's News</h1>
+      <div style="padding:5px; padding-bottom:10px; height: 400px;overflow-y: auto;"id="news-container"></div>
+  </div>
+    <div id="tobir" class="container" style="text-align: center; max-width: 500px; margin-left: auto; margin-right: auto; padding:5px;padding-top:20px; display: block;">
+        <div class="compass">
+      <div class="arrow"></div>
+      <div class="compass-circle"></div>
+      <div class="my-point"></div>
+    </div>
+    <div class="distance-display"><span id="distance"></span></div>
+    <button class="start-btn">Where's Bir LZ?</button>
+    </div>  
   <!-- Links and information container -->
   <div class="container" style="text-align: center; margin-top: 5px; padding: 10px;">
-    <button id="addToHomeScreen" style="display: none;">Install</button><br>
+    <button id="addToHomeScreen" style="display: none;">Install as PWA</button><br>
     <div id="iinfo" style="display: none;">
-      Install for many more features. This app gives you no cookies, nor gathers any of your data or takes any space on your device.
+      Install for many more features. For Andorid app, see at the top of this page.
     </div>
     <!-- Back to homepage and paragliding links -->
+    <button onclick="toggleTheme()">Toggle Theme</button><br>
+    <button onclick="refreshPage()">Refresh</button><br>
     <button href="https://paraguide.in">Back to homepage</button><br>
     <a href="https://j.mp/paraglidingindia">All about paragliding in India</a> 
     <a href="https://github.com/cyberorg/paraguidews">Paraguide Weather Station code, buy me beer...</a> 
@@ -185,14 +254,14 @@
     <a href="https://github.com/cyberorg/ParaguideWS-web">This web app's code, bugs, suggestions, PRs...</a>
     <p style="margin-top: 10px;">Data sourced from:<br> <a href="https://api.aerisapi.com" target="_blank">api.aerisapi.com</a>, <a href="https://meteoblue.com/" target="_blank">meteoblue.com</a>, <a href="https://rucsoundings.noaa.gov/" target="_blank">noaa.gov</a>, <a href="https://api.open-meteo.com" target="_blank">open-meteo.com</a>, <a href="https://wunderground.com" target="_blank">wunderground.com</a>, <a href="https://windy.com" target="_blank">windy.com</a></p>
   </div>
-  <!-- Container for random links -->
+   <!-- Container for random links -->
   <div id="randomlink" class="container" style="padding-bottom:75px;display: block;height: 200px;overflow-y: auto;">
     <h1 style="text-align: center;">Random links from j.mp/paraglidingindia</a> </h1>
     <button id="randomness" style="float: right;">🔀</button><br>
     <div id="randomContentContainer"></div>
   </div>
   <!-- External JavaScript for functionality -->
-  <script src="paraguidews.js"></script>
+  <script src="paraguidews.min.js"></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-KZ8E643JK3"></script>
   <script>

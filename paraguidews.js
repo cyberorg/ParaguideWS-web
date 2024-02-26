@@ -15,34 +15,6 @@ if (-1 === window.location.href.indexOf("?source=pwa")) {
     document.getElementById("tobir").style.display = "none";
     document.getElementById("randomlink").style.display = "none";
 }
-        // Function to set theme
-    function setTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
-    }
-
-    // Function to toggle theme
-    function toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      setTheme(newTheme);
-    }
-
-    // Function to detect system theme and set theme
-    function detectSystemTheme() {
-      const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-      const userPreference = localStorage.getItem('theme');
-      
-      if (userPreference) {
-        setTheme(userPreference);
-      } else if (prefersDarkScheme.matches) {
-        setTheme('dark');
-      } else {
-        setTheme('light');
-      }
-    }
-
-const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: light)");
 
 if (prefersDarkScheme.matches) {
     document.body.classList.remove("light-theme");
@@ -412,129 +384,144 @@ fetchWeatherData();
 fetchAlerts("alert1.txt", "todayAlerts", "todaySection");
 fetchAlerts("alert2.txt", "tomorrowAlerts", "tomorrowSection");
 getLocation();
-    const compassCircle = document.querySelector(".compass-circle");
-    const myPoint = document.querySelector(".my-point");
-    const startBtn = document.querySelector(".start-btn");
-    const distanceDisplay = document.getElementById("distance");
-    const isIOS =
-      navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-      navigator.userAgent.match(/AppleWebKit/);
+const compassCircle = document.querySelector(".compass-circle");
+const myPoint = document.querySelector(".my-point");
+const startBtn = document.querySelector(".start-btn");
+const distanceDisplay = document.getElementById("distance");
+const isIOS =
+  navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+  navigator.userAgent.match(/AppleWebKit/);
 
-    function init() {
-      startBtn.addEventListener("click", startCompass);
-      navigator.geolocation.getCurrentPosition(locationHandler);
+function init() {
+  startBtn.addEventListener("click", startCompass);
+  navigator.geolocation.getCurrentPosition(locationHandler);
 
-      if (!isIOS) {
-        window.addEventListener("deviceorientationabsolute", handler, true);
-      }
-    }
+  if (!isIOS) {
+    window.addEventListener("deviceorientationabsolute", handler, true);
+  }
+}
 
-    function startCompass() {
-      if (isIOS) {
-        DeviceOrientationEvent.requestPermission()
-          .then((response) => {
-            if (response === "granted") {
-              window.addEventListener("deviceorientation", handler, true);
-            } else {
-              alert("has to be allowed!");
-            }
-          })
-          .catch(() => alert("not supported"));
-      }
-    }
+function startCompass() {
+  if (isIOS) {
+    DeviceOrientationEvent.requestPermission()
+      .then((response) => {
+        if (response === "granted") {
+          window.addEventListener("deviceorientation", handler, true);
+        } else {
+          alert("has to be allowed!");
+        }
+      })
+      .catch(() => alert("not supported"));
+  }
+}
 
-    function handler(e) {
-      compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-      compassCircle.style.transform = `translate(-50%, -50%) rotate(${-compass}deg)`;
+let currentRotation = 0;
+let pointDegree;
+let currentPosition;
 
-      // ±15 degree
-      if (
-        (pointDegree < Math.abs(compass) &&
-          pointDegree + 15 > Math.abs(compass)) ||
-        pointDegree > Math.abs(compass + 15) ||
-        pointDegree < Math.abs(compass)
-      ) {
-        myPoint.style.opacity = 0;
-      } else if (pointDegree) {
-        myPoint.style.opacity = 1;
-      }
+function handler(e) {
+  let rawCompass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+  let normalizedCompass = rawCompass % 360; // Normalize compass value to 0-360 range
+  if (normalizedCompass < 0) {
+    normalizedCompass += 360; // Ensure positive value
+  }
 
-      if (currentPosition) {
-        const distance = calculateDistance(
-          currentPosition.coords.latitude,
-          currentPosition.coords.longitude
-        );
-        distanceDisplay.textContent = distance;
-      }
-    }
+  let rotationDifference = normalizedCompass - currentRotation;
 
-    let pointDegree;
-    let currentPosition;
+  // Adjust rotation if passing through 0 or 360
+  if (Math.abs(rotationDifference) > 180) {
+    rotationDifference = rotationDifference > 0 ? rotationDifference - 360 : rotationDifference + 360;
+  }
 
-    function locationHandler(position) {
-      currentPosition = position;
-      const { latitude, longitude } = position.coords;
-      pointDegree = calcDegreeToPoint(latitude, longitude);
+  currentRotation += rotationDifference;
+  compassCircle.style.transform = `translate(-50%, -50%) rotate(${-currentRotation}deg)`;
 
-      if (pointDegree < 0) {
-        pointDegree = pointDegree + 360;
-      }
-    }
+  // ±15 degree
+  if (
+    (pointDegree < Math.abs(normalizedCompass) &&
+      pointDegree + 15 > Math.abs(normalizedCompass)) ||
+    pointDegree > Math.abs(normalizedCompass + 15) ||
+    pointDegree < Math.abs(normalizedCompass)
+  ) {
+    myPoint.style.opacity = 0;
+  } else if (pointDegree) {
+    myPoint.style.opacity = 1;
+  }
 
-    function calcDegreeToPoint(latitude, longitude) {
-      // Bir LZ geolocation
-      const point = {
-        lat: 32.0420615,
-        lng: 76.7080957
-      };
+  if (currentPosition) {
+    const distance = calculateDistance(
+      currentPosition.coords.latitude,
+      currentPosition.coords.longitude
+    );
+    distanceDisplay.textContent = distance;
+  }
+}
 
-      const phiK = (point.lat * Math.PI) / 180.0;
-      const lambdaK = (point.lng * Math.PI) / 180.0;
-      const phi = (latitude * Math.PI) / 180.0;
-      const lambda = (longitude * Math.PI) / 180.0;
-      const psi =
-        (180.0 / Math.PI) *
-        Math.atan2(
-          Math.sin(lambdaK - lambda),
-          Math.cos(phi) * Math.tan(phiK) -
-            Math.sin(phi) * Math.cos(lambdaK - lambda)
-        );
-      return Math.round(psi);
-    }
+function locationHandler(position) {
+  currentPosition = position;
+  const { latitude, longitude } = position.coords;
+  pointDegree = calcDegreeToPoint(latitude, longitude);
 
-    function calculateDistance(latitude, longitude) {
-      const R = 6371; // Radius of the Earth in km
-      const lat1 = currentPosition.coords.latitude;
-      const lon1 = currentPosition.coords.longitude;
-      const lat2 = 32.0420615; // Bir LZ geolocation latitude
-      const lon2 = 76.7080957; // Bir LZ geolocation longitude
+  if (pointDegree < 0) {
+    pointDegree = pointDegree + 360;
+  }
+}
 
-      const dLat = deg2rad(lat2 - lat1);
-      const dLon = deg2rad(lon2 - lon1);
+function calcDegreeToPoint(latitude, longitude) {
+  // Bir LZ geolocation
+  const point = {
+    lat: 32.0420615,
+    lng: 76.7080957
+  };
 
-      const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) *
-          Math.cos(deg2rad(lat2)) *
-          Math.sin(dLon / 2) *
-          Math.sin(dLon / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const phiK = (point.lat * Math.PI) / 180.0;
+  const lambdaK = (point.lng * Math.PI) / 180.0;
+  const phi = (latitude * Math.PI) / 180.0;
+  const lambda = (longitude * Math.PI) / 180.0;
+  const psi =
+    (180.0 / Math.PI) *
+    Math.atan2(
+      Math.sin(lambdaK - lambda),
+      Math.cos(phi) * Math.tan(phiK) -
+        Math.sin(phi) * Math.cos(lambdaK - lambda)
+    );
+  return Math.round(psi);
+}
 
-      const d = R * c; // Distance in km
-      if (d > 2) {
-        const miles = d * 0.621371; // Convert km to miles
-        return `Bir LZ is ${miles.toFixed(2)} miles (${d.toFixed(2)} km) at ${pointDegree} degrees`;
-      } else {
-        const meters = d * 1000; // Convert km to meters
-        return `Bir LZ is ${meters.toFixed(2)} meters (${(d * 3280.84).toFixed(2)} feet) at ${pointDegree} degrees`;
-      }
-    }
+function calculateDistance(latitude, longitude) {
+  const R = 6371; // Radius of the Earth in km
+  const lat1 = currentPosition.coords.latitude;
+  const lon1 = currentPosition.coords.longitude;
+  const lat2 = 32.0420615; // Bir LZ geolocation latitude
+  const lon2 = 76.7080957; // Bir LZ geolocation longitude
 
-    function deg2rad(deg) {
-      return deg * (Math.PI / 180);
-    }
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
 
-    init();
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const d = R * c; // Distance in km
+  if (d > 2) {
+    const miles = d * 0.621371; // Convert km to miles
+    return `Bir LZ is ${miles.toFixed(2)} miles (${d.toFixed(2)} km) at ${pointDegree} degrees`;
+  } else {
+    const meters = d * 1000; // Convert km to meters
+    return `Bir LZ is ${meters.toFixed(2)} meters (${(d * 3280.84).toFixed(2)} feet) at ${pointDegree} degrees`;
+  }
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}
+
+init();
+
 var skewt = new SkewT("#skewt");
 var soundings = [];
 loadMultiple();
@@ -641,7 +628,7 @@ loadMultiple();
             });
 
 window.onload = function() {
-    detectSystemTheme();
+//    detectSystemTheme();
     fetchRandomURL();
     fetchRandomquote();
 };
