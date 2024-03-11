@@ -25,6 +25,10 @@ Visit [https://ws.paraguide.in/](https://ws.paraguide.in/) to see it in action.
 - [Add to home screen GitHub Repository](https://github.com/philfung/add-to-homescreen) - Turns to mobile app
 - [Orkhan Jafarov's compass](https://dev.to/orkhanjafarovr/real-compass-on-mobile-browsers-with-javascript-3emi) - LZ finder compass
 - [David Félix's](https://github.com/dfelix/skewt-js/) - Skewt-js
+- [Maxime Huylebroeck's](https://codepen.io/G_4s/pen/QGvoPv) - Hamburger menu
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Pay for my beer :)
+<img src="https://lh3.googleusercontent.com/pw/ABLVV85L02OXBQTlnN-L4L6FJxDEf30yOCbaM1mQ5xnsgpQSEYPX5P37mIOPHcO_CsIBi2ezfwGdWZdka3WQhLmCuSWCaqnEsYjJg6WY4H15EOoAuVaSdl8TwcrXBpWxSuoCACV6kbCNdvULpdXDcVON_hOlHw=w616-h855-s-no?authuser=0" alt="Pay for my beer" width="30%">
