@@ -13,6 +13,8 @@ ParaguideWS provides real-time weather information and live webcam feeds, tailor
 - Links to dashboards where this PWS is uploading data
 - Windy embedded providing local forecast
 - Add to Home Screen functionality for mobile users, makes it an app!
+- Skew-t, meteoblue and windy on one page
+- Local news
 
 ## Live
 
